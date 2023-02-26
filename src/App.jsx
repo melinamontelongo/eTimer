@@ -200,7 +200,7 @@ function App() {
       </div>
       <div className="flex">
         <div className="w-full grid place-content-center mt-4">
-          <Player btnStyle={playerStyle} />
+          <Player btnStyle={playerStyle} isSession={state.isSession}/>
         </div>
       </div>
       {background.photographer !== "none" ? <UnsplashCredit color={background.accents} photographer={background.photographer} /> : ""}
