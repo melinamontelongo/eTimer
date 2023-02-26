@@ -1,0 +1,14 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+html, body{
+  overflow:auto;
+  height: 100vh;
+}
+body{
+  background-attachment:fixed;
+}
+

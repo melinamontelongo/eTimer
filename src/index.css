@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC&family=Cookie&family=Cutive+Mono&family=Lobster&family=Press+Start+2P&family=Sevillana&family=Silkscreen&family=VT323&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    @font-face {
+      font-family: "Perfect-DOS";
+      src: url("./fonts/Perfect DOS VGA 437.ttf");
+    }
+    @font-face{
+      font-family: "Venice";
+      src: url("./fonts/VeniceClassic.ttf");
+    }
+    @font-face{
+      font-family: "PC-Senior";
+      src: url("./fonts/pcsenior.ttf");
+    }
+}
