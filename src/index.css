@@ -7,14 +7,14 @@
 @layer base {
     @font-face {
       font-family: "Perfect-DOS";
-      src: url("./fonts/Perfect DOS VGA 437.ttf");
+      src: url("../src/assets/fonts/PerfectDOSVGA437.ttf");
     }
     @font-face{
       font-family: "Venice";
-      src: url("./fonts/VeniceClassic.ttf");
+      src: url("../src/assets/fonts/VeniceClassic.ttf");
     }
     @font-face{
       font-family: "PC-Senior";
-      src: url("./fonts/pcsenior.ttf");
+      src: url("../src/assets/fonts/pcsenior.ttf");
     }
 }

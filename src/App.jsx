@@ -191,7 +191,7 @@ function App() {
         <div className="w-full m-2 rounded-md backdrop-contrast-75 backdrop-blur shadow-lg shadow-neutral-900/25" style={componentStyle}>
           <Timer text={state.isSession ? "Session" : "Break"} time={timeFormatter(state.timeLeft)} isRunning={state.isRunning} />
         </div>
-        <audio ref={alarm} id="beep" src="./sounds/alarm.mp3"></audio>
+        <audio ref={alarm} id="beep" src="../src/assets/sounds/alarm.mp3"></audio>
       </div>
       <div className="flex">
         <div className="w-full">
