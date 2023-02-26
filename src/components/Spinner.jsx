@@ -6,7 +6,7 @@ const Spinner = ({ isReady }) => {
             <div className="fixed inset-0 bg-gray-500 backdrop-blur-sm bg-opacity-50 transition-opacity"></div>
             <div className="fixed inset-0 z-10 overflow-y-auto">
                 <div className="flex min-h-full justify-center p-4 items-center sm:p-0">
-                    <ImSpinner8 className="text-white initanimate-spin text-5xl" />
+                    <ImSpinner8 className="text-white animate-spin text-5xl" />
                 </div>
             </div>
         </div>

@@ -1,18 +1,21 @@
 import { useReducer, useEffect, useState, useRef } from 'react';
-import tinycolor from "tinycolor2";
 import './App.css';
+import tinycolor from "tinycolor2";
 import Timer from "./components/Timer";
 import TimeLength from "./components/TimeLength";
 import Controls from "./components/Controls";
 import Player from "./components/Player";
 import Spinner from "./components/Spinner";
+import UnsplashCredit from "./components/UnsplashCredit";
 
 //To set the background image after the fetch
 function setBodyStyle(obj) {
   document.body.style.backgroundColor = obj.color
-  document.body.style.backgroundImage = `url(${obj.url})`
-  document.body.style.backgroundSize = `cover`
-  document.body.style.backgroundRepeat = "no-repeat"
+  if(obj.url !== undefined){
+    document.body.style.backgroundImage = `url(${obj.url})`
+    document.body.style.backgroundSize = `cover`
+    document.body.style.backgroundRepeat = "no-repeat"
+  }
 }
 function getDynamicColor(colorValue) {
   const color = tinycolor(colorValue);
@@ -87,7 +90,23 @@ function App() {
     if (!CHECK_LOCAL_IMG) {
       const ACCESS_KEY = import.meta.env.VITE_REACT_APP_ACCESS_KEY
       fetch(`https://api.unsplash.com/photos/random?client_id=${ACCESS_KEY}&query=sunset&orientation=landscape&content_filter=high`)
-        .then((res) => res.json())
+        .then((res) => {
+          if (res.status === 200){
+            return res.json();
+          } else {
+            //Fallback object to set body background
+            const FALLBACK = {
+              color: "#865DFF",
+              urls: {
+                full: "none"
+              },
+              user: {
+                username: "none"
+              }
+            }
+            return FALLBACK;
+          }
+        })
         .then((data) => {
           const BACKGROUND_OBJ = {
             color: data.color,
@@ -98,7 +117,7 @@ function App() {
           localStorage.setItem("bg-img", JSON.stringify(BACKGROUND_OBJ));
           setBackground(BACKGROUND_OBJ);
           setBodyStyle(BACKGROUND_OBJ);
-          return
+          return;
         })
         .then(() => setReady(true))
     } else {
@@ -184,9 +203,7 @@ function App() {
           <Player btnStyle={playerStyle} />
         </div>
       </div>
-      <div className="font-pixel mt-5" style={{ color: background.accents }}>
-        <p>Photo by <a className="underline" href={`https://unsplash.com/@${background.photographer}?utm_source=eTimer&utm_medium=referral`}>{background.photographer}</a> on <a className="underline" href="https://unsplash.com/?utm_source=eTimer&utm_medium=referral">Unsplash</a></p>
-      </div>
+      {background.photographer !== "none" ? <UnsplashCredit color={background.accents} photographer={background.photographer} /> : ""}
     </div>
   )
 }
