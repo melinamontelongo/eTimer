@@ -5,13 +5,15 @@ import Timer from "./components/Timer";
 import TimeLength from "./components/TimeLength";
 import Controls from "./components/Controls";
 import Player from "./components/Player";
+import ChangeBg from "./components/ChangeBg";
 import Spinner from "./components/Spinner";
 import UnsplashCredit from "./components/UnsplashCredit";
+const ACCESS_KEY = import.meta.env.VITE_REACT_APP_ACCESS_KEY;
 
 //To set the background image after the fetch
 function setBodyStyle(obj) {
   document.body.style.backgroundColor = obj.color
-  if(obj.url !== undefined){
+  if (obj.url !== undefined) {
     document.body.style.backgroundImage = `url(${obj.url})`
     document.body.style.backgroundSize = `cover`
     document.body.style.backgroundRepeat = "no-repeat"
@@ -79,6 +81,7 @@ function App() {
   })
   //Background object
   const [background, setBackground] = useState({});
+  const [imgCollection, setImgCollection] = useState(null)
 
   const [isReady, setReady] = useState(false);
 
@@ -86,12 +89,11 @@ function App() {
   const alarm = useRef(null)
   //Gets the background image (from localStorage or fetches it)
   useEffect(() => {
-    const CHECK_LOCAL_IMG = localStorage.getItem("bg-img")
-    if (!CHECK_LOCAL_IMG) {
-      const ACCESS_KEY = import.meta.env.VITE_REACT_APP_ACCESS_KEY
+    const LOCAL_IMG = localStorage.getItem("bg-img")
+    if (!LOCAL_IMG) {
       fetch(`https://api.unsplash.com/photos/random?client_id=${ACCESS_KEY}&query=sunset&orientation=landscape&content_filter=high`)
         .then((res) => {
-          if (res.status === 200){
+          if (res.status === 200) {
             return res.json();
           } else {
             //Fallback object to set body background
@@ -121,7 +123,7 @@ function App() {
         })
         .then(() => setReady(true))
     } else {
-      const LOCAL_IMG_OBJ = JSON.parse(CHECK_LOCAL_IMG)
+      const LOCAL_IMG_OBJ = JSON.parse(LOCAL_IMG)
       setBackground(LOCAL_IMG_OBJ);
       setBodyStyle(LOCAL_IMG_OBJ);
       setReady(true);
@@ -140,10 +142,32 @@ function App() {
   //Plays the alarm
   useEffect(() => {
     if (state.timeLeft === 0) {
-      alarm.current.play()
+      alarm.current.play();
       alarm.currentTime = 0;
     }
   })
+  const changeBackground = () => {
+    const LOCAL_COLLECTION = localStorage.getItem("bg-img-collection");
+    if (!LOCAL_COLLECTION){
+      return fetch(`https://api.unsplash.com/photos/random?client_id=${ACCESS_KEY}&query=sunset&orientation=landscape&content_filter=high&count=12`)
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          } else {
+            return "Not available"
+          }
+        })
+        .then((data) => {
+          localStorage.setItem("bg-img-collection", JSON.stringify(data));
+          setImgCollection(data);
+          return;
+        })
+    } else {
+      const LOCAL_COLLECTION_OBJ = JSON.parse(LOCAL_COLLECTION);
+      setImgCollection(LOCAL_COLLECTION_OBJ);
+      return;
+    }
+  }
   //Click handlers
   const incrementSession = () => {
     dispatch({ type: "increment_session" })
@@ -170,7 +194,7 @@ function App() {
               -1px 1px 0 ${background.accents},
               1px 1px 0 ${background.accents}`
   }
-  const playerStyle = {
+  const buttonModal = {
     backgroundColor: background.color,
     color: background.accents,
     border: `solid ${background.accents} 1px`
@@ -191,7 +215,7 @@ function App() {
         <div className="w-full m-2 rounded-md backdrop-contrast-75 backdrop-blur shadow-lg shadow-neutral-900/25" style={componentStyle}>
           <Timer text={state.isSession ? "Session" : "Break"} time={timeFormatter(state.timeLeft)} isRunning={state.isRunning} />
         </div>
-        <audio ref={alarm} id="beep" src="../src/assets/sounds/alarm.mp3"></audio>
+        <audio ref={alarm} id="beep" src="./src/assets/sounds/alarm.mp3"></audio>
       </div>
       <div className="flex">
         <div className="w-full">
@@ -199,11 +223,12 @@ function App() {
         </div>
       </div>
       <div className="flex">
-        <div className="w-full grid place-content-center mt-4">
-          <Player btnStyle={playerStyle} isSession={state.isSession}/>
+        <div className="w-full grid grid-cols-2 place-content-center gap-3 mt-4">
+          <Player btnStyle={buttonModal} isSession={state.isSession} />
+          <ChangeBg btnStyle={buttonModal} clickHandler={changeBackground} dynamicColor={getDynamicColor} setBg={setBackground} setBody={setBodyStyle} imagesCollection={imgCollection}/>
         </div>
       </div>
-      {background.photographer !== "none" ? <UnsplashCredit color={background.accents} photographer={background.photographer} /> : ""}
+      {background.photographer !== "none" ? <div className="backdrop-contrast-75 backdrop-blur w-max mx-auto pr-4 pl-4 rounded-md"><UnsplashCredit color={background.accents} photographer={background.photographer} /></div> : ""}
     </div>
   )
 }

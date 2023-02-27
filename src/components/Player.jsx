@@ -27,7 +27,7 @@ const Player = ({ btnStyle, isSession }) => {
     }
     return (
         <div className="">
-            <button type="button" className="font-pixel p-1 px-2 rounded-lg hover:scale-110 transition-transform duration-500 ease-in-out" style={btnStyle} onClick={togglePlayer}>
+            <button type="button" className="w-full font-pixel p-1 px-2 rounded-lg hover:scale-110 transition-transform duration-500 ease-in-out" style={btnStyle} onClick={togglePlayer}>
                 {isPlaying ? strToDisplay : "Want to hear some music?"}
             </button>
 
