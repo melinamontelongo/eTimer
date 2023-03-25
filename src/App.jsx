@@ -115,7 +115,8 @@ function App() {
             color: data.color,
             accents: getDynamicColor(data.color),
             url: data.urls.full,
-            photographer: data.user.username
+            photographer: data.user.username,
+            download_location: data.links.download_location
           }
           localStorage.setItem("bg-img", JSON.stringify(BACKGROUND_OBJ));
           setBackground(BACKGROUND_OBJ);

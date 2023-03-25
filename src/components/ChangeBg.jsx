@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import UnsplashCredit from "./UnsplashCredit";
 
-const ChangeBg = ({ btnStyle, clickHandler, dynamicColor, setBg, setBody, imagesCollection}) => {
+const ChangeBg = ({ btnStyle, clickHandler, dynamicColor, setBg, setBody, imagesCollection }) => {
     const [savedImage, setSavedImage] = useState(null);
 
     const bgModal = useRef(null);
@@ -26,7 +26,8 @@ const ChangeBg = ({ btnStyle, clickHandler, dynamicColor, setBg, setBody, images
             color: chosenImg.dataset.color,
             accents: dynamicColor(chosenImg.dataset.color),
             url: chosenImg.dataset.full,
-            photographer: chosenImg.dataset.photographer
+            photographer: chosenImg.dataset.photographer,
+            download_link: chosenImg.dataset.download
         };
         setSavedImage(chosenImgInfo);
     }
@@ -36,11 +37,13 @@ const ChangeBg = ({ btnStyle, clickHandler, dynamicColor, setBg, setBody, images
         setSavedImage(null);
         clickHandler();
     }
-    const modalSave = () => {
+    const modalSave = async () => {
         //Save the current selected image and display it
         localStorage.setItem("bg-img", JSON.stringify(savedImage));
         setBg(savedImage);
         setBody(savedImage);
+        //Comply with Unsplash guidelines (triggering downloads)
+        const triggerDownload = await fetch(savedImage.download_link);
         //Close the modal
         bgModal.current.classList.add("hidden");
     }
@@ -67,7 +70,7 @@ const ChangeBg = ({ btnStyle, clickHandler, dynamicColor, setBg, setBody, images
                                     <div className="mt-3 text-center sm:mt-0 sm:ml-4">
                                         <h3 className="text-4xl font-venice leading-6" id="modal-title" style={modalTextStyle}>Here are some backgrounds to choose from</h3>
                                         <div className="mt-5 mb-5 grid grid-cols-3 gap-1 place-items-center">
-                                            { imagesCollection !== null &&
+                                            {imagesCollection !== null &&
                                                 imagesCollection.map((image) =>
                                                     <img
                                                         key={image.id}
@@ -80,6 +83,7 @@ const ChangeBg = ({ btnStyle, clickHandler, dynamicColor, setBg, setBody, images
                                                         data-full={image.urls.full}
                                                         data-color={image.color}
                                                         data-photographer={image.user.username}
+                                                        data-download={image.links.download_link}
                                                         onClick={chooseImg}>
                                                     </img>
                                                 )
